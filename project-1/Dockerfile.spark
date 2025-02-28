@@ -1,0 +1,12 @@
+FROM bitnami/spark:3.4.0
+
+USER root
+RUN apt-get update && apt-get install -y wget curl
+# Add Hadoop AWS and AWS SDK dependencies for MinIO support
+RUN wget -P /opt/bitnami/spark/jars \
+    https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.2/hadoop-aws-3.3.2.jar && \
+    wget -P /opt/bitnami/spark/jars \
+    https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.11.901/aws-java-sdk-bundle-1.11.901.jar
+#Install to load the environment variables for minio access
+RUN pip install python-dotenv
+USER 1001  # Switch back to non-root user

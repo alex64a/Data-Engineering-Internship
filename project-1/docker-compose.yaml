@@ -60,20 +60,31 @@ services:
   
   spark:
     image: bitnami/spark:3.4.0
+    build:
+      context: .
+      dockerfile: Dockerfile.spark
+    env_file:
+      - ./.env
     environment:
       - SPARK_MODE=master
     ports:
       - "8081:8080"
     volumes:
       - ./spark-apps:/opt/spark-apps
+    
 
   spark-worker:
     image: bitnami/spark:3.4.0
+    build:
+      context: .
+      dockerfile: Dockerfile.spark
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark:7077
     depends_on:
       - spark
+    volumes:
+      - ./spark-apps:/opt/spark-apps
 
   metabase:
     image: metabase/metabase:latest
