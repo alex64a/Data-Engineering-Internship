@@ -36,6 +36,9 @@ services:
     cap_add:
       - NET_ADMIN # low port bindings
     image: apache/nifi
+    build:
+      context: .
+      dockerfile: Dockerfile.nifi
     container_name: nifi
     env_file:
       - ./youtube-api-v3/.env  # Load .env file variables

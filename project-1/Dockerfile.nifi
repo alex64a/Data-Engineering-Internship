@@ -1,0 +1,8 @@
+FROM apache/nifi
+
+USER root
+
+RUN apt-get install -y python3-requests \
+    python3-dotenv
+
+USER 1001

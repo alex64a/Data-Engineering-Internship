@@ -16,17 +16,12 @@ spark = SparkSession.builder \
     .config("spark.hadoop.fs.s3a.path.style.access", "true") \
     .getOrCreate()
 
-# Load raw data from MinIO
-df = spark.read.json("s3a://youtube-data/*")
+df = spark.read.parquet("s3a://youtube-data/cleaned/youtube_data.parquet")
 
-# Remove unnecessary columns
-columns_to_keep = ["title", "author", "views", "likes", "comments"]
-df_cleaned = df.select(columns_to_keep)
+df_aggregated = df.groupBy("author").agg(
+    {"views": "sum", "likes": "avg", "comments": "sum"}
+).withColumnRenamed("sum(views)", "total_views") \
+ .withColumnRenamed("avg(likes)", "avg_likes") \
+ .withColumnRenamed("sum(comments)", "total_comments")
 
-df_cleaned = df_cleaned.dropna()
-
-# Save cleaned data
-df_cleaned.write.mode("overwrite").parquet("s3a://youtube-data/cleaned/youtube_data.parquet")
-df_cleaned.show()
-
-spark.stop()
+df_aggregated.write.mode("overwrite").parquet("s3a://youtube-data/aggregated/youtube_data.parquet")
