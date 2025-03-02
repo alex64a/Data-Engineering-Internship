@@ -14,6 +14,8 @@ spark = SparkSession.builder \
     .config("spark.hadoop.fs.s3a.secret.key", MINIO_SECRET_KEY) \
     .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
     .config("spark.hadoop.fs.s3a.path.style.access", "true") \
+    .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
+    .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
     .getOrCreate()
 
 # Load raw data from MinIO
@@ -29,4 +31,6 @@ df_cleaned = df_cleaned.dropna()
 df_cleaned.write.mode("overwrite").parquet("s3a://youtube-data/cleaned/youtube_data.parquet")
 df_cleaned.show()
 
+# Save cleaned data to Delta format
+df_cleaned.write.format("delta").mode("overwrite").save("s3a://youtube-data/delta/youtube-data")
 spark.stop()

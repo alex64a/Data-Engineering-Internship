@@ -88,6 +88,21 @@ services:
       - spark
     volumes:
       - ./spark-apps:/opt/spark-apps
+  
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: youtube_data_transformed
+    ports: 
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: 
+      - default
 
   metabase:
     image: metabase/metabase:latest
@@ -104,3 +119,4 @@ volumes:
   nifi-conf:
   nifi_flowfile:
   nifi_content:
+  postgres_data:

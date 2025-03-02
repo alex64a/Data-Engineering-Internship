@@ -8,7 +8,7 @@ MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER")
 MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD")
 # Initialize Spark session
 spark = SparkSession.builder \
-    .appName("DataCleaning") \
+    .appName("TransformData") \
     .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000") \
     .config("spark.hadoop.fs.s3a.access.key", MINIO_ACCESS_KEY) \
     .config("spark.hadoop.fs.s3a.secret.key", MINIO_SECRET_KEY) \
@@ -24,4 +24,17 @@ df_aggregated = df.groupBy("author").agg(
  .withColumnRenamed("avg(likes)", "avg_likes") \
  .withColumnRenamed("sum(comments)", "total_comments")
 
+# Save to minio
 df_aggregated.write.mode("overwrite").parquet("s3a://youtube-data/aggregated/youtube_data.parquet")
+
+# Write to postgres
+df_aggregated.write \
+    .format("jdbc") \
+    .option("url", "jdbc:postgresql://postgres:5432/youtube_data_transformed") \
+    .option("dbtable", "youtube_aggregated") \
+    .option("user", POSTGRES_USER) \
+    .option("password", POSTGRES_PASSWORD) \
+    .mode("append") \
+    .save()
+
+
