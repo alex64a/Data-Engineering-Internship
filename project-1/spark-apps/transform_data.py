@@ -27,14 +27,4 @@ df_aggregated = df.groupBy("author").agg(
 # Save to minio
 df_aggregated.write.mode("overwrite").parquet("s3a://youtube-data/aggregated/youtube_data.parquet")
 
-# Write to postgres
-df_aggregated.write \
-    .format("jdbc") \
-    .option("url", "jdbc:postgresql://postgres:5432/youtube_data_transformed") \
-    .option("dbtable", "youtube_aggregated") \
-    .option("user", POSTGRES_USER) \
-    .option("password", POSTGRES_PASSWORD) \
-    .mode("append") \
-    .save()
-
 
