@@ -139,6 +139,9 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # Grant Docker access
+    user: root  # Ensure Airflow runs as root
     networks:
       - airflow_network
 
@@ -156,6 +159,8 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
     networks:
       - airflow_network
       
@@ -181,6 +186,10 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # Grant Docker access
+      - ./airflow/dags:/opt/airflow/dags
+    user: root  # Ensure Airflow runs as root
     networks:
       - airflow_network
 
