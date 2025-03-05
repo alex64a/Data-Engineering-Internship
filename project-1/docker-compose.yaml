@@ -1,3 +1,8 @@
+networks:
+  airflow_network:
+    name: airflow_network
+    driver: bridge
+
 services:
   minio:
     image: minio/minio
@@ -10,6 +15,8 @@ services:
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
+    networks:
+      - airflow_network
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -36,6 +43,9 @@ services:
     cap_add:
       - NET_ADMIN # low port bindings
     image: apache/nifi
+    build:
+      context: .
+      dockerfile: Dockerfile.nifi
     container_name: nifi
     env_file:
       - ./youtube-api-v3/.env  # Load .env file variables
@@ -56,24 +66,55 @@ services:
       - nifi_content:/opt/nifi/nifi-current/content_repository
       - ./youtube-api-v3/youtube_fetch_data.py:/opt/nifi/scripts/youtube_fetch_data.py
     restart: unless-stopped
-
+    networks:
+      - airflow_network
   
   spark:
     image: bitnami/spark:3.4.0
+    build:
+      context: .
+      dockerfile: Dockerfile.spark
+    env_file:
+      - ./.env
     environment:
       - SPARK_MODE=master
     ports:
       - "8081:8080"
     volumes:
       - ./spark-apps:/opt/spark-apps
+    networks:
+      - airflow_network
 
   spark-worker:
     image: bitnami/spark:3.4.0
+    build:
+      context: .
+      dockerfile: Dockerfile.spark
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark:7077
     depends_on:
       - spark
+    volumes:
+      - ./spark-apps:/opt/spark-apps
+    networks:
+      - airflow_network
+  
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports: 
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: 
+      - default
+      - airflow_network
 
   metabase:
     image: metabase/metabase:latest
@@ -83,6 +124,7 @@ services:
       MB_DB_FILE: /metabase-data/metabase.db
     volumes:
       - metabase-data:/metabase-data
+  
 
 volumes:
   minio_data:
@@ -90,3 +132,4 @@ volumes:
   nifi-conf:
   nifi_flowfile:
   nifi_content:
+  postgres_data:

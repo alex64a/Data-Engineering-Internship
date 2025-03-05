@@ -33,4 +33,3 @@ for item in video_response["items"]:
 
 # Print JSON output (NiFi will read this)
 print(json.dumps(results))
-
