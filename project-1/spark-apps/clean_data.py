@@ -33,5 +33,5 @@ df_cleaned.write.mode("overwrite").parquet("s3a://youtube-data/cleaned/youtube_d
 df_cleaned.show()
 
 # Save cleaned data to Delta format
-df_cleaned.write.format("delta").mode("overwrite").save("s3a://youtube-data/delta/youtube-data")
+# df_cleaned.write.format("delta").mode("overwrite").save("s3a://youtube-data/delta/youtube-data")
 spark.stop()

@@ -10,7 +10,7 @@ MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER")
 MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD")
 
 # PostgreSQL connection properties
-POSTGRES_URL = "jdbc:postgresql://postgres:5432/youtube_data_transformed"
+POSTGRES_URL = "jdbc:postgresql://postgres-youtube:5432/youtube_data_transformed"
 
 POSTGRES_PROPERTIES = {
     "user": POSTGRES_USER,
