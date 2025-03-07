@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER")
 MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD")
+FILE_NAME="youtube_data.parquet"
+CLEANED_DATA_PATH="s3a://youtube-data/cleaned/"
+
 # Initialize Spark session
 spark = SparkSession.builder \
     .appName("DataCleaning") \
@@ -29,9 +32,9 @@ df_cleaned = df.select(columns_to_keep)
 df_cleaned = df_cleaned.dropna()
 
 # Save cleaned data
-df_cleaned.write.mode("overwrite").parquet("s3a://youtube-data/cleaned/youtube_data.parquet")
+df_cleaned.write.mode("overwrite").parquet(f"{CLEANED_DATA_PATH}{FILE_NAME}")
 df_cleaned.show()
 
 # Save cleaned data to Delta format
-df_cleaned.write.format("delta").mode("overwrite").save("s3a://youtube-data/delta/youtube-data")
+# df_cleaned.write.format("delta").mode("overwrite").save("s3a://youtube-data/delta/youtube-data")
 spark.stop()
