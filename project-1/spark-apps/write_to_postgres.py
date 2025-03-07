@@ -9,7 +9,8 @@ POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER")
 MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD")
 POSTGRES_CONTAINER="postgres-youtube"
-POSTGRES_TABLE="youtube_data_transformed"
+POSTGRES_DATABASE="youtube_data_transformed"
+POSTGRES_TABLE="processed_table"
 READ_DATA_PATH="s3a://youtube-data/aggregated/youtube_data.parquet"
 
 # PostgreSQL connection properties
@@ -35,11 +36,11 @@ spark = SparkSession.builder \
 
 
 # Read data from MinIO
-df = spark.read.parquet(READ_DATA_PATH)
+df = spark.read.parquetG(READ_DATA_PATH)
 
 # Write transformed data to PostgreSQL
 df.write \
     .mode("overwrite") \
-    .jdbc(POSTGRES_URL, "processed_table", properties=POSTGRES_PROPERTIES)
+    .jdbc(POSTGRES_URL, POSTGRES_TABLE, properties=POSTGRES_PROPERTIES)
 
 print("✅ Data successfully written to PostgreSQL!")
