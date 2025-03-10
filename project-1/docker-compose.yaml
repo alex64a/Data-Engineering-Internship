@@ -308,8 +308,12 @@ services:
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+    volumes:
+      - zoo:/data
+      - zoolog:/datalog
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -326,7 +330,10 @@ services:
       - "9092:9092"
     depends_on:
       - zookeeper
+    volumes:
+      - kafka:/var/lib/kafka/data 
 
+ 
   nifi:
     cap_add:
       - NET_ADMIN # low port bindings
@@ -391,9 +398,9 @@ services:
     volumes:
       - ./spark-apps:/opt/spark-apps
   
-  postgres-youtube:
+  postgres-database:
     image: postgres:15
-    container_name: postgres-youtube
+    container_name: postgres-database
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -422,3 +429,6 @@ volumes:
   nifi_content:
   postgres_data:
   postgres-db-volume:
+  zoo:
+  zoolog:
+  kafka:
