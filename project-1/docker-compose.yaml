@@ -381,6 +381,7 @@ services:
       - "8081:8080"
     volumes:
       - ./spark-apps:/opt/spark-apps
+      - ./data:/opt/data
 
   spark-worker:
     image: bitnami/spark:3.4.0
@@ -397,6 +398,7 @@ services:
       - spark
     volumes:
       - ./spark-apps:/opt/spark-apps
+      - ./data:/opt/data
   
   postgres-database:
     image: postgres:15
