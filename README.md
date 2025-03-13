@@ -69,8 +69,8 @@ well as place it in the destination storage/database.
 Implemented Spark applications to: clean, transform the Data Lake data and write it to a PostgreSQL database.
 Automated all the spark jobs with Apache Airflow : 
 <p align="left">
-  <img src="https://github.com/user-attachments/assets/aec9579a-7be2-4545-8697-9aaec9cd4405" width="500", height="300">
-  <img src="https://github.com/user-attachments/assets/8f79b19f-a014-42e8-b48c-9e317708f0fe" width="500", height="300">
+  <img src="https://github.com/user-attachments/assets/aec9579a-7be2-4545-8697-9aaec9cd4405" width="500">
+  <img src="https://github.com/user-attachments/assets/8f79b19f-a014-42e8-b48c-9e317708f0fe" width="500">
 </p>
 
 ### Phase IV - streaming data processing
