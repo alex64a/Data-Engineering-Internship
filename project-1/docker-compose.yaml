@@ -360,6 +360,7 @@ services:
       - nifi_flowfile:/opt/nifi/nifi-current/flowfile_repository
       - nifi_content:/opt/nifi/nifi-current/content_repository
       - ./youtube-api-v3/youtube_fetch_data.py:/opt/nifi/scripts/youtube_fetch_data.py
+      - ./youtube-api-v3/trending.py:/opt/nifi/scripts/trending.py
     restart: unless-stopped
   
   spark:

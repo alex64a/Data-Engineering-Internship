@@ -10,7 +10,7 @@ POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 POSTGRES_CONTAINER="postgres-database"
 POSTGRES_DATABASE="processed_data"
-POSTGRES_TABLE_30m2="properties_larger_than_30m2"
+POSTGRES_TABLE_100m2="properties_larger_than_100m2"
 POSTGRES_TABLE_AVG_PRICE="properties_avg_price"
 
 POSTGRES_URL = f"jdbc:postgresql://{POSTGRES_CONTAINER}:5432/{POSTGRES_DATABASE}"
@@ -43,8 +43,8 @@ df = df.withColumn("building_construction_year", col("building_construction_year
 median_year = df.approxQuantile("building_construction_year", [0.5], 0.0)[0]
 df = df.fillna({"building_construction_year": median_year})
 
-# Filter properties with area > 30 sqm
-df_filtered = df.filter(col("apartment_total_area") > 30)
+# Filter properties with area > 100 sqm
+df_filtered = df.filter(col("apartment_total_area") > 100)
 
 # Aggregate average price per sqm by country
 df_avg_price = df_filtered.groupBy("country").agg(avg("price_per_sqm").alias("avg_price_per_sqm"))
@@ -52,7 +52,7 @@ df_avg_price = df_filtered.groupBy("country").agg(avg("price_per_sqm").alias("av
 # Write transformed data to PostgreSQL
 df_filtered.write \
     .mode("overwrite") \
-    .jdbc(POSTGRES_URL, POSTGRES_TABLE_30m2, properties=POSTGRES_PROPERTIES)
+    .jdbc(POSTGRES_URL, POSTGRES_TABLE_100m2, properties=POSTGRES_PROPERTIES)
 
 df_avg_price.write \
     .mode("overwrite") \
