@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 API_KEY = os.getenv("YOUTUBE_API_KEY")
 QUERY = "bitcoin"
-MAX_RESULTS = 5
+MAX_RESULTS = 100
 
 #Get Video IDs
 search_url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q={QUERY}&type=video&maxResults={MAX_RESULTS}&key={API_KEY}"
