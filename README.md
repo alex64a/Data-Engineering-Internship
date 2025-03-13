@@ -90,11 +90,17 @@ It is necessary to present the processing results to the user in
 the most natural way possible, through interactive tables and
 diagrams. Metabase was used for data visualization.
 <p align="left">
-  <img src="https://github.com/user-attachments/assets/b6643dea-51b1-4c2f-a0e9-aad5564c0868" width="500", height="240">
-  <img src="https://github.com/user-attachments/assets/445b985c-582d-424f-8544-b6fb7a2124ec" width="500", height="240">
-</p>
-<p align="left">
-  <img src="https://github.com/user-attachments/assets/9ca0194e-95b6-40cf-a64c-6325b67d1745" width="500", height="240">
-  <img src="https://github.com/user-attachments/assets/f00feca3-08de-4c24-a8c6-391ce72fca6c" width="500", height="240">
+  <img src="https://github.com/user-attachments/assets/b6643dea-51b1-4c2f-a0e9-aad5564c0868" width="500">
 </p>
 
+<p align="left">
+  <img src="https://github.com/user-attachments/assets/445b985c-582d-424f-8544-b6fb7a2124ec" width="500">
+</p>
+
+<p align="left">
+  <img src="https://github.com/user-attachments/assets/9ca0194e-95b6-40cf-a64c-6325b67d1745" width="500">
+</p>
+
+<p align="left">
+  <img src="https://github.com/user-attachments/assets/f00feca3-08de-4c24-a8c6-391ce72fca6c" width="500">
+</p>
