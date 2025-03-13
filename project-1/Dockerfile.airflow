@@ -1,0 +1,52 @@
+# Use an official Airflow image as the base
+FROM apache/airflow:2.7.2-python3.11
+
+# Set environment variables
+ENV AIRFLOW_HOME=/opt/airflow
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV SPARK_HOME=/opt/spark
+ENV HADOOP_HOME=/opt/hadoop
+ENV PATH="${SPARK_HOME}/bin:${HADOOP_HOME}/bin:${PATH}"
+
+USER root
+# Update package list and install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openjdk-11-jdk \
+    ca-certificates-java \
+    curl wget unzip git \
+    && apt-get clean
+# Install Apache Spark and Hadoop AWS dependencies
+RUN wget -qO - https://archive.apache.org/dist/spark/spark-3.4.0/spark-3.4.0-bin-hadoop3.tgz | tar -xz -C /opt/ && \
+    ln -s /opt/spark-3.4.0-bin-hadoop3 /opt/spark
+
+# Install Hadoop AWS JARs for MinIO (S3-compatible storage)
+RUN wget -P /opt/spark/jars \
+    https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.2/hadoop-aws-3.3.2.jar && \
+    wget -P /opt/spark/jars \
+    https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.11.901/aws-java-sdk-bundle-1.11.901.jar
+
+# Install Delta Lake dependencies
+RUN curl -o /opt/spark/jars/delta-core_2.12-2.4.0.jar \
+    https://repo1.maven.org/maven2/io/delta/delta-core_2.12/2.4.0/delta-core_2.12-2.4.0.jar
+
+# Install PostgreSQL JDBC driver for Airflow database connection
+RUN curl -o /opt/spark/jars/postgresql-42.5.0.jar \
+    https://jdbc.postgresql.org/download/postgresql-42.5.0.jar
+
+USER airflow
+# Install additional Python dependencies required for Airflow
+RUN pip install --no-cache-dir \
+    apache-airflow-providers-apache-spark \
+    apache-airflow-providers-amazon \
+    boto3 pyspark delta-spark \
+    --upgrade apache-airflow-providers-openlineage>=1.8.0
+
+
+# Set default working directory
+WORKDIR $AIRFLOW_HOME
+
+# Set up entrypoint
+ENTRYPOINT ["/entrypoint"]
+
+# Expose webserver port
+EXPOSE 8080
