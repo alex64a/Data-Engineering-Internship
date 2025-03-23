@@ -78,6 +78,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     - ./spark-apps:/opt/spark-apps
+    - ./data:/opt/data
 
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
